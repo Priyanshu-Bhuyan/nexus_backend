@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: genie-ai-app
+    env: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -Dserver.port=$PORT -jar target/*.jar
+    envVars:
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx512m
+      - key: GEMINI_API_KEY
+        sync: false
