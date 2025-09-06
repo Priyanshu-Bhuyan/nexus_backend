@@ -1,11 +1,19 @@
-FROM maven:3.8.6-openjdk-11-slim AS build
+FROM openjdk:11-jdk-slim
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven && apt-get clean
+
+# Set working directory
 WORKDIR /app
-COPY pom.xml .
-COPY src/ src/
+
+# Copy everything
+COPY . .
+
+# Build the application
 RUN mvn clean package -DskipTests
 
-FROM openjdk:11-jre-slim
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+# Expose port
 EXPOSE 8080
-CMD ["java", "-Dserver.port=${PORT:-8080}", "-jar", "app.jar"]
+
+# Run the application
+CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar target/*.jar"]
